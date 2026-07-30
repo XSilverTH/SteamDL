@@ -10,5 +10,5 @@ if (args.Length > 0) return await CommandLine.RunAsync(args);
 Module.Initialize();
 GResourceHelper.RegisterAssemblyResources(typeof(Program).Assembly);
 
-var app = new App();
+var app = App.NewWithProperties([]);
 return app.RunWithSynchronizationContext(args);

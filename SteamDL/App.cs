@@ -5,20 +5,19 @@ using SteamDL.Views;
 using Application = Adw.Application;
 using Task = System.Threading.Tasks.Task;
 
-#pragma warning disable GirCore1007
-
 namespace SteamDL;
 
-public class App : Application
+[GObject.Subclass<Application>]
+public partial class App
 {
-    private readonly ConnectionCoordinator _connection;
+    private ConnectionCoordinator _connection = null!;
     private readonly RuntimePaths _paths = RuntimePaths.CreateForCurrentUser();
-    private readonly SettingsStore _settingsStore;
+    private SettingsStore _settingsStore = null!;
     private MainWindow? _mainWindow;
     private bool _shuttingDown;
     private StatusNotifierTrayManager? _tray;
 
-    public App()
+    partial void Initialize()
     {
         _settingsStore = new SettingsStore(_paths);
         _connection = new ConnectionCoordinator(_paths, _settingsStore, new MitmdumpResolver(_paths));
