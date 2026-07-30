@@ -7,6 +7,20 @@
         <Nullable>enable</Nullable>
         <AssemblyName>SteamDL</AssemblyName>
         <RootNamespace>SteamDL</RootNamespace>
+        <BundledMitmdumpPath Condition="'$(BundledMitmdumpPath)' == ''">Mitm/mitmdump</BundledMitmdumpPath>
+        <IsAotCompatible>true</IsAotCompatible>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+        <DebugType>embedded</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+        <StripSymbols>true</StripSymbols>
+        <DebugType>none</DebugType>
+        <DebugSymbols>false</DebugSymbols>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,10 +32,16 @@
     <ItemGroup>
         <PackageReference Include="GirCore.Adw-1" Version="0.8.0"/>
         <PackageReference Include="XSTH.Blueprint.Helpers" Version="2.0.0"/>
+        <PackageReference Include="Tmds.DBus.Protocol" Version="0.94.2"/>
     </ItemGroup>
 
     <ItemGroup>
         <AdditionalFiles Include="**\*.blp"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Mitm/addon.py" LogicalName="SteamDL.Mitm.Addon"/>
+        <EmbeddedResource Include="$(BundledMitmdumpPath)" LogicalName="SteamDL.Mitm.Mitmdump" Condition="Exists('$(BundledMitmdumpPath)')"/>
     </ItemGroup>
 
 </Project>

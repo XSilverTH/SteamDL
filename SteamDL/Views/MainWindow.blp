@@ -1,35 +1,51 @@
 using Gtk 4.0;
 using Adw 1;
 
+menu primary_menu {
+  section {
+    item("Settings", "app.settings")
+    item("Quit", "app.quit")
+  }
+}
+
 Adw.ApplicationWindow MainWindow {
-  default-width: 800;
-  default-height: 600;
+  default-width: 360;
+  default-height: 240;
   title: "SteamDL";
 
   content: Adw.ToolbarView {
     [top]
-    Adw.HeaderBar header_bar {
-      title-widget: Adw.WindowTitle {
-        title: "SteamDL";
-        subtitle: "Template Application";
-      };
+    Adw.HeaderBar {
+      [end]
+      MenuButton {
+        icon-name: "open-menu-symbolic";
+        menu-model: primary_menu;
+      }
     }
 
-    content: Adw.StatusPage {
-      title: "Welcome";
-      description: "Hello, World!";
-      icon-name: "face-smile-big-symbolic";
+    content: Adw.Clamp {
+      maximum-size: 360;
 
       child: Box {
         orientation: vertical;
-        spacing: 12;
+        spacing: 18;
         valign: center;
+        halign: fill;
+        margin-top: 24;
+        margin-bottom: 24;
+        margin-start: 24;
+        margin-end: 24;
 
-        Button click_me_button {
-          label: "Click Me!";
-          halign: center;
-          clicked => $OnClickMeButton_Clicked();
+        Button connect_button {
+          label: "Connect";
+          clicked => $OnConnectButton_Clicked();
           styles ["pill", "suggested-action"]
+        }
+
+        Label traffic_label {
+          label: "0 B used";
+          justify: center;
+          styles ["title-2"]
         }
       };
     };
