@@ -1,0 +1,25 @@
+using SteamDL.Views;
+
+namespace SteamDL;
+
+public class App : Adw.Application
+{
+    public App()
+    {
+        ApplicationId = "xsth.steamdl";
+        Flags = Gio.ApplicationFlags.FlagsNone;
+        OnActivate += Activate;
+    }
+
+    private void Activate(Gio.Application sender, EventArgs args)
+    {
+        var mainWindowWrapper = new MainWindow();
+        var mainWindow = mainWindowWrapper.Widget;
+
+        mainWindow.Application = this;
+
+        AddWindow(mainWindow);
+
+        mainWindow.Present();
+    }
+}
