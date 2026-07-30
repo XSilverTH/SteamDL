@@ -9,6 +9,10 @@ if (args.Length > 0) return await CommandLine.RunAsync(args);
 
 Module.Initialize();
 GResourceHelper.RegisterAssemblyResources(typeof(Program).Assembly);
+
+var display = Gdk.Display.GetDefault();
+if (display is not null) Gtk.IconTheme.GetForDisplay(display).AddResourcePath("/SteamDL/icons");
+
 Gtk.Window.SetDefaultIconName("xsth.steamdl");
 
 var app = App.NewWithProperties([]);
