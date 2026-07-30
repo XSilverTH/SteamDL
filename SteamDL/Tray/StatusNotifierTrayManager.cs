@@ -1,4 +1,6 @@
+using System.Runtime.InteropServices;
 using System.Text;
+using GdkPixbuf;
 using GLib;
 using Tmds.DBus.Protocol;
 
@@ -64,7 +66,7 @@ internal sealed class StatusNotifierTrayManager(Action activateWindow) : IAsyncD
 
     private void ActivateWindow()
     {
-        Functions.IdleAdd(0, () =>
+        GLib.Functions.IdleAdd(0, () =>
         {
             activateWindow();
             return false;
@@ -87,8 +89,8 @@ internal sealed class StatusNotifierTrayManager(Action activateWindow) : IAsyncD
                                                   <property name="Title" type="s" access="read"/>
                                                   <property name="Status" type="s" access="read"/>
                                                   <property name="IconName" type="s" access="read"/>
+                                                  <property name="IconPixmap" type="a(iiay)" access="read"/>
                                                   <property name="OverlayIconName" type="s" access="read"/>
-                                                  <property name="AttentionIconName" type="s" access="read"/>
                                                   <property name="IsMenu" type="b" access="read"/>
                                                   <property name="Menu" type="o" access="read"/>
                                                 </interface>
@@ -122,12 +124,43 @@ internal sealed class StatusNotifierTrayManager(Action activateWindow) : IAsyncD
                 ["Id"] = "steamdl",
                 ["Title"] = "SteamDL",
                 ["Status"] = "Active",
-                ["IconName"] = "network-vpn-symbolic",
+                ["IconName"] = string.Empty,
+                ["IconPixmap"] = CreateIconPixmap(),
                 ["OverlayIconName"] = string.Empty,
                 ["AttentionIconName"] = string.Empty,
                 ["IsMenu"] = false,
                 ["Menu"] = new ObjectPath("/")
             };
+
+        private static VariantValue CreateIconPixmap()
+        {
+            var pixbuf = Pixbuf.NewFromResourceAtScale(
+                "/SteamDL/icons/xsth.steamdl.png",
+                32,
+                32,
+                true) ?? throw new InvalidOperationException("SteamDL's tray icon resource could not be loaded.");
+            using (pixbuf)
+            {
+                var width = pixbuf.Width;
+                var height = pixbuf.Height;
+                var source = new byte[width * height * 4];
+                Marshal.Copy(pixbuf.Pixels, source, 0, source.Length);
+
+                var argb = new byte[source.Length];
+                for (var index = 0; index < source.Length; index += 4)
+                {
+                    argb[index] = source[index + 3];
+                    argb[index + 1] = source[index];
+                    argb[index + 2] = source[index + 1];
+                    argb[index + 3] = source[index + 2];
+                }
+
+                return new Array<Struct<int, int, Array<byte>>>
+                {
+                    Struct.Create(width, height, new Array<byte>(argb))
+                };
+            }
+        }
 
         public string Path => "/StatusNotifierItem";
 

@@ -37,6 +37,8 @@ public partial class App
 
     private void Activate(Gio.Application sender, EventArgs args)
     {
+        var display = Gdk.Display.GetDefault();
+        if (display is not null) Gtk.IconTheme.GetForDisplay(display).AddResourcePath("/SteamDL/icons");
         if (_mainWindow is not null)
         {
             _mainWindow.Widget.Present();

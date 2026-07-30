@@ -9,6 +9,7 @@ if (args.Length > 0) return await CommandLine.RunAsync(args);
 
 Module.Initialize();
 GResourceHelper.RegisterAssemblyResources(typeof(Program).Assembly);
+Gtk.Window.SetDefaultIconName("xsth.steamdl");
 
 var app = App.NewWithProperties([]);
 return app.RunWithSynchronizationContext(args);

@@ -44,4 +44,8 @@
         <EmbeddedResource Include="$(BundledMitmdumpPath)" LogicalName="SteamDL.Mitm.Mitmdump" Condition="Exists('$(BundledMitmdumpPath)')"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <GResource Include="Assets/xsth.steamdl.png" Alias="icons/xsth.steamdl.png" />
+    </ItemGroup>
+
 </Project>
